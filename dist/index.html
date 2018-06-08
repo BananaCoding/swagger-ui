@@ -44,6 +44,10 @@
       const host = slashes.concat(location.host);
       const url = host.concat('/api/docs');
 
+      const accessToken = localStorage.getItem('accessToken');
+      const client = localStorage.getItem('client');
+      const uid = localStorage.getItem('uid')
+
       // Build a system
       const ui = SwaggerUIBundle({
         url: url,
@@ -57,6 +61,13 @@
           SwaggerUIBundle.plugins.DownloadUrl
         ],
         // layout: "StandaloneLayout"
+        onComplete: function () {
+          if (!(accessToken && client && uid)) { return true }
+
+          ui.preauthorizeApiKey("access-token", accessToken);
+          ui.preauthorizeApiKey("client", client);
+          ui.preauthorizeApiKey("uid", uid);
+        }
       })
 
       window.ui = ui
